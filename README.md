@@ -15,6 +15,10 @@ An intelligent chatbot system for parking space reservation using Retrieval-Augm
 - **Performance Evaluation**: Comprehensive metrics including latency, Recall@K, Precision@K, and MRR
 
 ### Technical Highlights
+- **Flexible LLM Support**: 
+  - OpenAI (GPT-3.5-turbo, GPT-4)
+  - Groq (Llama 3 8B/70B, Mixtral) - **NEW!** ⚡ Up to 5x faster inference
+  - Automatic provider detection and fallback
 - **Hybrid Data Architecture**: 
   - Static data (general info, location, policies) → FAISS vector store
   - Dynamic data (availability, prices, hours) → SQLite database
@@ -31,7 +35,7 @@ An intelligent chatbot system for parking space reservation using Retrieval-Augm
 ## 📋 Requirements
 
 - Python 3.9 or higher
-- OpenAI API key
+- OpenAI API key **OR** Groq API key (see [Groq Integration Guide](GROQ_INTEGRATION.md))
 - Virtual environment (recommended)
 
 ## 🚀 Installation
@@ -69,11 +73,26 @@ Create a `.env` file in the project root:
 cp .env.example .env
 ```
 
-Edit `.env` and add your OpenAI API key:
+Edit `.env` and add your API key(s):
 
+**Option A: OpenAI (Default)**
 ```env
 OPENAI_API_KEY=your_openai_api_key_here
 ```
+
+**Option B: Groq (Alternative LLM Provider)**
+```env
+GROQ_API_KEY=your_groq_api_key_here
+OPENAI_API_KEY=your_openai_api_key_here  # Still needed for embeddings
+LLM_PROVIDER=groq
+```
+
+**Option C: Groq Only (Limited Functionality)**
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
+> 📘 **New!** Groq API support for faster, cost-effective LLM inference. See [GROQ_INTEGRATION.md](GROQ_INTEGRATION.md) for details.
 
 ### 5. Initialize Vector Store
 

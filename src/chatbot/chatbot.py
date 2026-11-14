@@ -30,10 +30,29 @@ class ParkingChatbot:
         # Initialize components
         logger.info("Initializing chatbot components...")
 
+        # Determine active provider
+        try:
+            provider = settings.get_active_provider()
+            api_key = settings.get_active_api_key()
+            logger.info(f"Using LLM provider: {provider}")
+        except ValueError as e:
+            logger.error(str(e))
+            raise
+
         self.db_manager = DatabaseManager(settings.database_url)
+
+        # Note: Vector store embeddings require OpenAI API key
+        # If using Groq for LLM, still need OpenAI for embeddings
+        embedding_api_key = settings.openai_api_key if settings.openai_api_key else api_key
+        if not settings.openai_api_key and provider == "groq":
+            logger.warning(
+                "Groq API key provided but embeddings require OpenAI. "
+                "Vector store functionality may be limited."
+            )
+
         self.vector_store_manager = VectorStoreManager(
             embedding_model=settings.embedding_model,
-            api_key=settings.openai_api_key,
+            api_key=embedding_api_key,
             vector_store_path=settings.vector_store_path,
             chunk_size=settings.chunk_size,
             chunk_overlap=settings.chunk_overlap
@@ -55,9 +74,10 @@ class ParkingChatbot:
 
         self.generator = RAGGenerator(
             model_name=settings.llm_model,
-            api_key=settings.openai_api_key,
+            api_key=api_key,
             temperature=settings.llm_temperature,
-            max_tokens=settings.max_tokens
+            max_tokens=settings.max_tokens,
+            provider=provider
         )
 
         self.sensitive_filter = SensitiveDataFilter()

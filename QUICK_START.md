@@ -2,7 +2,7 @@
 
 ## Prerequisites
 - Python 3.9+
-- OpenAI API key
+- OpenAI API key OR Groq API key (see GROQ_INTEGRATION.md)
 
 ## Installation (5 minutes)
 
@@ -17,7 +17,10 @@ pip install -r requirements.txt
 
 # 3. Configure API key
 cp .env.example .env
-# Edit .env and add: OPENAI_API_KEY=your-key-here
+# Edit .env and add:
+# OPENAI_API_KEY=your-key-here (for OpenAI)
+# or GROQ_API_KEY=your-key-here (for Groq - faster & cheaper!)
+# or both (recommended)
 
 # 4. Initialize vector store
 python init_vectorstore.py
@@ -76,6 +79,7 @@ pip install -r requirements.txt
 
 - **README.md** - Full documentation
 - **SETUP_GUIDE.md** - Detailed setup
+- **GROQ_INTEGRATION.md** - Groq API setup (faster & cheaper LLM)
 - **PROJECT_SUMMARY.md** - Complete overview
 - **EVALUATION_METHODOLOGY.md** - Metrics details
 

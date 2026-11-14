@@ -1,5 +1,4 @@
 """Application settings and configuration management."""
-import os
 from pathlib import Path
 from typing import Optional
 from pydantic_settings import BaseSettings
@@ -10,11 +9,19 @@ class Settings(BaseSettings):
     """Application configuration settings."""
 
     # OpenAI Configuration
-    openai_api_key: str = Field(..., env="OPENAI_API_KEY")
+    openai_api_key: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
+
+    # Groq Configuration (fallback)
+    groq_api_key: Optional[str] = Field(default=None, env="GROQ_API_KEY")
+
+    # Model Configuration
     embedding_model: str = Field(default="text-embedding-3-small", env="EMBEDDING_MODEL")
     llm_model: str = Field(default="gpt-3.5-turbo", env="LLM_MODEL")
     llm_temperature: float = Field(default=0.7, env="LLM_TEMPERATURE")
     max_tokens: int = Field(default=500, env="MAX_TOKENS")
+
+    # Provider selection (auto-detected if not specified)
+    llm_provider: Optional[str] = Field(default=None, env="LLM_PROVIDER")
 
     # Database Configuration
     database_url: str = Field(default="sqlite:///data/dynamic_data.db", env="DATABASE_URL")
@@ -47,6 +54,44 @@ class Settings(BaseSettings):
     def static_data_dir(self) -> Path:
         """Get static data directory."""
         return self.data_dir / "static_data"
+
+    def get_active_provider(self) -> str:
+        """Determine which LLM provider to use.
+
+        Returns:
+            'openai' or 'groq' based on available API keys
+
+        Raises:
+            ValueError: If no API key is configured
+        """
+        if self.llm_provider:
+            return self.llm_provider.lower()
+
+        if self.openai_api_key:
+            return "openai"
+        elif self.groq_api_key:
+            return "groq"
+        else:
+            raise ValueError(
+                "No LLM API key configured. Please set either OPENAI_API_KEY or GROQ_API_KEY in your .env file."
+            )
+
+    def get_active_api_key(self) -> str:
+        """Get the API key for the active provider.
+
+        Returns:
+            API key string
+
+        Raises:
+            ValueError: If no API key is configured
+        """
+        provider = self.get_active_provider()
+        if provider == "openai":
+            return self.openai_api_key
+        elif provider == "groq":
+            return self.groq_api_key
+        else:
+            raise ValueError(f"Unknown provider: {provider}")
 
 
 def get_settings() -> Settings:

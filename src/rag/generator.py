@@ -6,6 +6,12 @@ from langchain.prompts import ChatPromptTemplate
 from langchain.schema.runnable import RunnablePassthrough
 from langchain.schema import StrOutputParser
 
+try:
+    from langchain_groq import ChatGroq
+    GROQ_AVAILABLE = True
+except ImportError:
+    GROQ_AVAILABLE = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -17,22 +23,51 @@ class RAGGenerator:
         model_name: str,
         api_key: str,
         temperature: float = 0.7,
-        max_tokens: int = 500
+        max_tokens: int = 500,
+        provider: str = "openai"
     ):
         """Initialize RAG generator.
 
         Args:
             model_name: Name of the LLM model
-            api_key: OpenAI API key
+            api_key: API key for the provider
             temperature: Generation temperature
             max_tokens: Maximum tokens in response
+            provider: LLM provider ('openai' or 'groq')
         """
-        self.llm = ChatOpenAI(
-            model=model_name,
-            openai_api_key=api_key,
-            temperature=temperature,
-            max_tokens=max_tokens
-        )
+        self.provider = provider.lower()
+        self.model_name = model_name
+
+        if self.provider == "openai":
+            self.llm = ChatOpenAI(
+                model=model_name,
+                openai_api_key=api_key,
+                temperature=temperature,
+                max_tokens=max_tokens
+            )
+            logger.info(f"Initialized RAG generator with OpenAI model: {model_name}")
+        elif self.provider == "groq":
+            if not GROQ_AVAILABLE:
+                raise ImportError(
+                    "Groq support requires langchain-groq. Install it with: pip install langchain-groq"
+                )
+            # Map common OpenAI models to Groq equivalents
+            groq_model_map = {
+                "gpt-3.5-turbo": "llama3-8b-8192",
+                "gpt-4": "llama3-70b-8192",
+                "gpt-4-turbo": "mixtral-8x7b-32768"
+            }
+            groq_model = groq_model_map.get(model_name, "llama3-8b-8192")
+
+            self.llm = ChatGroq(
+                model=groq_model,
+                groq_api_key=api_key,
+                temperature=temperature,
+                max_tokens=max_tokens
+            )
+            logger.info(f"Initialized RAG generator with Groq model: {groq_model} (mapped from {model_name})")
+        else:
+            raise ValueError(f"Unsupported provider: {provider}. Use 'openai' or 'groq'.")
 
         self.system_prompt = """You are a helpful parking reservation assistant. Your role is to:
 1. Provide accurate information about the parking facility

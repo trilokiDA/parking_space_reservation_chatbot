@@ -6,8 +6,12 @@ This guide will walk you through setting up the chatbot from scratch.
 
 - Python 3.9 or higher
 - pip package manager
-- OpenAI API key ([Get one here](https://platform.openai.com/api-keys))
+- **OpenAI API key** ([Get one here](https://platform.openai.com/api-keys)) 
+  **OR** 
+- **Groq API key** ([Get one here](https://console.groq.com)) - Faster & cheaper alternative!
 - Git (optional, for version control)
+
+> 💡 **New Feature**: You can now use either OpenAI or Groq APIs. See [GROQ_INTEGRATION.md](GROQ_INTEGRATION.md) for details.
 
 ## Step-by-Step Setup
 
@@ -74,9 +78,23 @@ notepad .env
 nano .env
 ```
 
-**Required variables in .env:**
+**Required variables in .env (choose one or both):**
+
+**Option A: OpenAI Only**
 ```env
 OPENAI_API_KEY=sk-your-actual-api-key-here
+```
+
+**Option B: Groq + OpenAI (Recommended for cost savings)**
+```env
+OPENAI_API_KEY=sk-your-openai-key  # For embeddings
+GROQ_API_KEY=gsk-your-groq-key     # For LLM (faster!)
+LLM_PROVIDER=groq
+```
+
+**Option C: Groq Only (Limited - no vector store creation)**
+```env
+GROQ_API_KEY=gsk-your-groq-key
 ```
 
 **Optional configurations:**
@@ -85,6 +103,7 @@ EMBEDDING_MODEL=text-embedding-3-small
 LLM_MODEL=gpt-3.5-turbo
 LLM_TEMPERATURE=0.7
 MAX_TOKENS=500
+LLM_PROVIDER=openai  # or 'groq' (auto-detected if not set)
 ```
 
 ### 4. Initialize the Vector Store
