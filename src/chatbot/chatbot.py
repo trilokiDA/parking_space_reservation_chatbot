@@ -41,14 +41,13 @@ class ParkingChatbot:
 
         self.db_manager = DatabaseManager(settings.database_url)
 
-        # Note: Vector store embeddings require OpenAI API key
-        # If using Groq for LLM, still need OpenAI for embeddings
-        embedding_api_key = settings.openai_api_key if settings.openai_api_key else api_key
+        # For embeddings: use OpenAI if available, otherwise use local HuggingFace model
+        embedding_api_key = settings.openai_api_key
         if not settings.openai_api_key and provider == "groq":
-            logger.warning(
-                "Groq API key provided but embeddings require OpenAI. "
-                "Vector store functionality may be limited."
+            logger.info(
+                "Using Groq for LLM. Embeddings will use local HuggingFace model (no API key needed)."
             )
+            embedding_api_key = None
 
         self.vector_store_manager = VectorStoreManager(
             embedding_model=settings.embedding_model,

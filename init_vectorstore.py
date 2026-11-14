@@ -3,7 +3,7 @@ import os
 import logging
 from pathlib import Path
 from dotenv import load_dotenv
-from langchain.schema import Document
+from langchain_core.documents import Document
 from src.config.settings import get_settings
 from src.rag.vector_store import VectorStoreManager
 

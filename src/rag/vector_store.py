@@ -3,10 +3,11 @@ import os
 import logging
 from pathlib import Path
 from typing import List, Optional
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_openai import OpenAIEmbeddings
-from langchain.schema import Document
+from langchain_core.documents import Document
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +18,7 @@ class VectorStoreManager:
     def __init__(
         self,
         embedding_model: str,
-        api_key: str,
+        api_key: Optional[str],
         vector_store_path: str,
         chunk_size: int = 500,
         chunk_overlap: int = 50
@@ -26,16 +27,28 @@ class VectorStoreManager:
 
         Args:
             embedding_model: Name of the embedding model
-            api_key: OpenAI API key
+            api_key: OpenAI API key (optional, if None uses HuggingFace)
             vector_store_path: Path to store FAISS index
             chunk_size: Size of text chunks
             chunk_overlap: Overlap between chunks
         """
         self.embedding_model = embedding_model
-        self.embeddings = OpenAIEmbeddings(
-            model=embedding_model,
-            openai_api_key=api_key
-        )
+
+        # Use HuggingFace embeddings if no OpenAI API key provided
+        if api_key:
+            self.embeddings = OpenAIEmbeddings(
+                model=embedding_model,
+                openai_api_key=api_key
+            )
+            logger.info(f"Using OpenAI embeddings: {embedding_model}")
+        else:
+            # Use a lightweight sentence-transformers model
+            model_name = "all-MiniLM-L6-v2"
+            self.embeddings = HuggingFaceEmbeddings(
+                model_name=model_name,
+                model_kwargs={'device': 'cpu'}
+            )
+            logger.info(f"Using HuggingFace embeddings: {model_name}")
         self.vector_store_path = vector_store_path
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap

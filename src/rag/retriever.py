@@ -1,7 +1,7 @@
 """RAG retriever for combining static and dynamic data."""
 import logging
 from typing import List, Dict, Any
-from langchain.schema import Document
+from langchain_core.documents import Document
 from ..database.db_manager import DatabaseManager
 from .vector_store import VectorStoreManager
 

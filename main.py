@@ -55,10 +55,10 @@ def main():
     # Load environment variables
     load_dotenv()
 
-    # Check for API key
-    if not os.getenv("OPENAI_API_KEY"):
-        print("\n❌ Error: OPENAI_API_KEY not found!")
-        print("Please create a .env file with your OpenAI API key.")
+    # Check for at least one API key
+    if not os.getenv("OPENAI_API_KEY") and not os.getenv("GROQ_API_KEY"):
+        print("\n❌ Error: No API key found!")
+        print("Please create a .env file with either OPENAI_API_KEY or GROQ_API_KEY.")
         print("See .env.example for the required format.\n")
         return
 
@@ -116,7 +116,7 @@ def main():
         print(f"\n❌ Error: {e}")
         print("\nPlease ensure:")
         print("  1. You have run: pip install -r requirements.txt")
-        print("  2. You have created a .env file with your OpenAI API key")
+        print("  2. You have created a .env file with your API key (OPENAI_API_KEY or GROQ_API_KEY)")
         print("  3. You have initialized the vector store: python init_vectorstore.py\n")
 
 
