@@ -14,7 +14,7 @@ class TestGroqIntegration:
             'OPENAI_API_KEY': 'sk-test-key',
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             assert settings.get_active_provider() == "openai"
             assert settings.get_active_api_key() == "sk-test-key"
 
@@ -24,7 +24,7 @@ class TestGroqIntegration:
             'GROQ_API_KEY': 'gsk-test-key',
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             assert settings.get_active_provider() == "groq"
             assert settings.get_active_api_key() == "gsk-test-key"
 
@@ -35,7 +35,7 @@ class TestGroqIntegration:
             'GROQ_API_KEY': 'gsk-test-key',
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             assert settings.get_active_provider() == "openai"
             assert settings.get_active_api_key() == "sk-test-key"
 
@@ -47,7 +47,7 @@ class TestGroqIntegration:
             'LLM_PROVIDER': 'groq',
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             assert settings.get_active_provider() == "groq"
             assert settings.get_active_api_key() == "gsk-test-key"
 
@@ -56,7 +56,7 @@ class TestGroqIntegration:
         with patch.dict('os.environ', {
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             with pytest.raises(ValueError, match="No LLM API key configured"):
                 settings.get_active_provider()
 
@@ -86,10 +86,11 @@ class TestGroqIntegration:
     @patch('src.rag.generator.GROQ_AVAILABLE', True)
     def test_generator_groq_model_mapping(self):
         """Test Groq model mapping from OpenAI models."""
+        # Updated to reflect current model mapping (openai/gpt-oss-20b for all models)
         test_cases = [
-            ("gpt-3.5-turbo", "llama3-8b-8192"),
-            ("gpt-4", "llama3-70b-8192"),
-            ("gpt-4-turbo", "mixtral-8x7b-32768"),
+            ("gpt-3.5-turbo", "openai/gpt-oss-20b"),
+            ("gpt-4", "openai/gpt-oss-20b"),
+            ("gpt-4-turbo", "openai/gpt-oss-20b"),
         ]
 
         for openai_model, expected_groq_model in test_cases:
@@ -161,7 +162,7 @@ class TestProviderSelection:
             'LLM_PROVIDER': 'GROQ',  # Test case insensitivity
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             assert settings.get_active_provider() == "groq"
 
     def test_openai_preferred_when_both_available(self):
@@ -171,7 +172,7 @@ class TestProviderSelection:
             'GROQ_API_KEY': 'gsk-test',
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             # Without explicit LLM_PROVIDER, should default to OpenAI
             assert settings.get_active_provider() == "openai"
 
@@ -181,7 +182,7 @@ class TestProviderSelection:
             'GROQ_API_KEY': 'gsk-test',
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             assert settings.get_active_provider() == "groq"
 
 
@@ -194,7 +195,7 @@ class TestAPIKeyRetrieval:
             'OPENAI_API_KEY': 'sk-test-123',
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             assert settings.get_active_api_key() == "sk-test-123"
 
     def test_get_groq_key(self):
@@ -203,7 +204,7 @@ class TestAPIKeyRetrieval:
             'GROQ_API_KEY': 'gsk-test-456',
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             assert settings.get_active_api_key() == "gsk-test-456"
 
     def test_get_key_with_explicit_provider(self):
@@ -214,5 +215,5 @@ class TestAPIKeyRetrieval:
             'LLM_PROVIDER': 'groq',
             'DATABASE_URL': 'sqlite:///test.db'
         }, clear=True):
-            settings = Settings()
+            settings = Settings(_env_file=None)
             assert settings.get_active_api_key() == "gsk-test"
