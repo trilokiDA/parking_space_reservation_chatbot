@@ -1,0 +1,69 @@
+Parking Reservation Process
+
+How to Make a Reservation:
+
+Step 1: Provide Personal Information
+To make a reservation, you'll need to provide:
+- First name
+- Last name
+- Vehicle registration/license plate number
+
+Step 2: Select Parking Period
+Choose your desired parking period by specifying:
+- Start date and time
+- End date and time
+
+Reservations can be made for:
+- Hourly parking (minimum 1 hour)
+- Daily parking (full day rate)
+- Weekly parking (7-day period)
+- Monthly parking (30-day period)
+
+Step 3: Confirmation Process
+After submitting your reservation:
+1. You will receive a reservation ID
+2. Your reservation will be marked as "pending"
+3. A parking administrator will review and confirm your reservation
+4. You will be notified once confirmed (typically within 1-2 hours)
+5. You will receive your assigned parking space number
+
+Step 4: Arrival
+When you arrive:
+- Enter through the main entrance
+- Proceed to your assigned parking space
+- Display your reservation confirmation if requested
+- Park only in your designated space
+
+Reservation Policies:
+
+Cancellation Policy:
+- Reservations can be cancelled up to 24 hours before start time for a full refund
+- Cancellations within 24 hours: 50% refund
+- No-shows: no refund
+
+Modification Policy:
+- Reservations can be modified up to 12 hours before start time
+- Changes to vehicle registration number must be made before arrival
+- Date/time changes subject to availability
+
+Late Arrival:
+- Your space is held for 2 hours past the start time
+- After 2 hours, the reservation may be cancelled without refund
+- Please notify us if you'll be delayed
+
+Early Departure:
+- No refunds for early departure
+- Please notify the office when leaving early
+
+Extension:
+- Parking extensions subject to availability
+- Contact the office or use the mobile app to request an extension
+- Extension rates apply based on original booking rate
+
+Important Notes:
+- One reservation per vehicle at a time
+- The vehicle registration number must match the parked vehicle
+- Reservations are non-transferable
+- Smoking is not permitted in the facility
+- Maximum vehicle height: 7 feet
+- Commercial vehicles require special arrangements
