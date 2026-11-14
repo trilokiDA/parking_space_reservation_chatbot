@@ -2,9 +2,9 @@
 import logging
 from typing import Dict, Any, Optional
 from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
-from langchain.schema.runnable import RunnablePassthrough
-from langchain.schema import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough
+from langchain_core.output_parsers import StrOutputParser
 
 try:
     from langchain_groq import ChatGroq
@@ -52,12 +52,13 @@ class RAGGenerator:
                     "Groq support requires langchain-groq. Install it with: pip install langchain-groq"
                 )
             # Map common OpenAI models to Groq equivalents
+            # Updated model names as of November 2024 (old models deprecated)
             groq_model_map = {
-                "gpt-3.5-turbo": "llama3-8b-8192",
-                "gpt-4": "llama3-70b-8192",
-                "gpt-4-turbo": "mixtral-8x7b-32768"
+                "gpt-3.5-turbo": "openai/gpt-oss-20b",
+                "gpt-4": "openai/gpt-oss-20b",
+                "gpt-4-turbo": "openai/gpt-oss-20b"
             }
-            groq_model = groq_model_map.get(model_name, "llama3-8b-8192")
+            groq_model = groq_model_map.get(model_name, "openai/gpt-oss-20b")
 
             self.llm = ChatGroq(
                 model=groq_model,
