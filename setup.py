@@ -15,7 +15,7 @@ setup(
     description="Intelligent chatbot for parking space reservation using RAG",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/intelligent-chatbot",
+    url="https://github.com/trilokiDA/parking_space_reservation_chatbot",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",

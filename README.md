@@ -43,7 +43,7 @@ An intelligent chatbot system for parking space reservation using Retrieval-Augm
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/intelligent-chatbot.git
+git clone https://github.com/trilokiDA/parking_space_reservation_chatbot.git
 cd intelligent-chatbot
 ```
 
@@ -406,7 +406,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📧 Contact
 
-Project Link: [https://github.com/yourusername/intelligent-chatbot](https://github.com/yourusername/intelligent-chatbot)
+Project Link: [https://github.com/trilokiDA/parking_space_reservation_chatbot](https://github.com/trilokiDA/parking_space_reservation_chatbot)
 
 ## 🙏 Acknowledgments
 
