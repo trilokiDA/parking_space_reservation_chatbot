@@ -109,6 +109,13 @@ class ParkingChatbot:
                 self._reset_reservation_flow()
                 return "Reservation cancelled. How can I help you today?"
 
+            # Check if this is an admin/status query (takes priority over reservation flow)
+            if self._is_admin_query(sanitized_message):
+                # Exit reservation flow if in one
+                if self._is_in_reservation_flow():
+                    self._reset_reservation_flow()
+                return self._handle_admin_query(sanitized_message)
+
             # Check if user is in reservation flow
             if self._is_in_reservation_flow():
                 return self._handle_reservation_flow(sanitized_message)
@@ -159,13 +166,18 @@ class ParkingChatbot:
         Returns:
             True if reservation request, False otherwise
         """
-        reservation_keywords = [
-            "book", "reserve", "reservation", "make a booking",
-            "i want to park", "need a spot", "need parking"
+        # Keywords that indicate wanting to MAKE a reservation
+        make_reservation_keywords = [
+            "make a reservation", "book a", "i want to reserve",
+            "i need to book", "create a reservation", "new reservation",
+            "i want to park", "need a spot", "need parking",
+            "reserve a spot", "book parking"
         ]
 
         message_lower = message.lower()
-        return any(keyword in message_lower for keyword in reservation_keywords)
+
+        # Check if user wants to make a new reservation
+        return any(keyword in message_lower for keyword in make_reservation_keywords)
 
     def _is_cancel_request(self, message: str) -> bool:
         """Check if message is a cancel/exit request.
@@ -183,6 +195,103 @@ class ParkingChatbot:
 
         message_lower = message.lower()
         return any(keyword in message_lower for keyword in cancel_keywords)
+
+    def _is_admin_query(self, message: str) -> bool:
+        """Check if message is an admin/status query.
+
+        Args:
+            message: User message
+
+        Returns:
+            True if admin query, False otherwise
+        """
+        admin_keywords = [
+            "pending reservation", "all reservation", "show reservation",
+            "list reservation", "check status", "reservation status",
+            "status of reservation", "my reservation", "reservation id",
+            "reservation", "status"  # Catch "show me reservation X status"
+        ]
+
+        message_lower = message.lower()
+
+        # First check: contains admin keywords AND (a digit OR words like "pending"/"all")
+        has_admin_keyword = any(keyword in message_lower for keyword in admin_keywords)
+        has_digit = any(char.isdigit() for char in message_lower)
+        has_list_word = any(word in message_lower for word in ["pending", "all", "list", "show"])
+
+        return has_admin_keyword and (has_digit or has_list_word)
+
+    def _handle_admin_query(self, message: str) -> str:
+        """Handle admin/status queries.
+
+        Args:
+            message: User message
+
+        Returns:
+            Response to admin query
+        """
+        message_lower = message.lower()
+
+        # Extract reservation ID if present
+        import re
+        id_match = re.search(r'\b(\d+)\b', message)
+
+        # Check for pending reservations query
+        if any(keyword in message_lower for keyword in ["pending", "all", "show", "list"]):
+            try:
+                reservations = self.db_manager.get_all_reservations()
+                pending_reservations = [r for r in reservations if r.get('status') == 'pending']
+
+                if not pending_reservations:
+                    return "There are no pending reservations at the moment."
+
+                response = f"📋 Pending Reservations ({len(pending_reservations)}):\n\n"
+                for res in pending_reservations:
+                    response += f"ID: {res['id']}\n"
+                    response += f"  Name: {res['first_name']} {res['last_name']}\n"
+                    response += f"  Car: {res['car_number']}\n"
+                    response += f"  Start: {res['start_time']}\n"
+                    response += f"  End: {res['end_time']}\n"
+                    response += f"  Status: {res['status']}\n\n"
+
+                return response
+            except Exception as e:
+                logger.error(f"Error fetching pending reservations: {e}")
+                return "I apologize, but I couldn't retrieve the pending reservations. Please try again."
+
+        # Check for status query with ID
+        elif "status" in message_lower and id_match:
+            reservation_id = int(id_match.group(1))
+            try:
+                reservation = self.db_manager.get_reservation(reservation_id)
+
+                if not reservation:
+                    return f"Reservation with ID {reservation_id} was not found."
+
+                response = f"📊 Reservation {reservation_id} Status:\n\n"
+                response += f"Name: {reservation['first_name']} {reservation['last_name']}\n"
+                response += f"Car: {reservation['car_number']}\n"
+                response += f"Start: {reservation['start_time']}\n"
+                response += f"End: {reservation['end_time']}\n"
+                response += f"Status: {reservation['status']}\n"
+
+                if reservation.get('admin_decision'):
+                    response += f"Admin Decision: {reservation['admin_decision']}\n"
+                if reservation.get('admin_notes'):
+                    response += f"Admin Notes: {reservation['admin_notes']}\n"
+                if reservation.get('decided_at'):
+                    response += f"Decided At: {reservation['decided_at']}\n"
+
+                return response
+            except Exception as e:
+                logger.error(f"Error fetching reservation status: {e}")
+                return f"I apologize, but I couldn't retrieve the status for reservation {reservation_id}. Please try again."
+
+        # General admin query without specific action
+        return ("I can help you with:\n"
+                "• Check status of a specific reservation: 'Check status of reservation <ID>'\n"
+                "• View pending reservations: 'Show me all pending reservations'\n\n"
+                "What would you like to know?")
 
     def _start_reservation_flow(self) -> str:
         """Start reservation collection flow.

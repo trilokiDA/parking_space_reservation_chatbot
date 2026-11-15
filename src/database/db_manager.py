@@ -177,8 +177,48 @@ class DatabaseManager:
                     "start_time": reservation.start_time.isoformat(),
                     "end_time": reservation.end_time.isoformat(),
                     "status": reservation.status,
-                    "confirmed_by_admin": reservation.confirmed_by_admin
+                    "confirmed_by_admin": reservation.confirmed_by_admin,
+                    "admin_decision": reservation.admin_decision,
+                    "admin_notes": reservation.admin_notes,
+                    "decided_at": reservation.decided_at.isoformat() if reservation.decided_at else None
                 }
             return None
+        finally:
+            session.close()
+
+    def get_all_reservations(self, status: Optional[str] = None) -> List[Dict[str, Any]]:
+        """Get all reservations, optionally filtered by status.
+
+        Args:
+            status: Optional status filter (e.g., 'pending', 'confirmed')
+
+        Returns:
+            List of reservation data
+        """
+        session = self.SessionLocal()
+        try:
+            query = session.query(Reservation)
+            if status:
+                query = query.filter(Reservation.status == status)
+
+            reservations = query.order_by(Reservation.created_at.desc()).all()
+
+            return [
+                {
+                    "id": r.id,
+                    "first_name": r.first_name,
+                    "last_name": r.last_name,
+                    "car_number": r.car_number,
+                    "start_time": r.start_time.isoformat(),
+                    "end_time": r.end_time.isoformat(),
+                    "status": r.status,
+                    "confirmed_by_admin": r.confirmed_by_admin,
+                    "admin_decision": r.admin_decision,
+                    "admin_notes": r.admin_notes,
+                    "decided_at": r.decided_at.isoformat() if r.decided_at else None,
+                    "created_at": r.created_at.isoformat()
+                }
+                for r in reservations
+            ]
         finally:
             session.close()

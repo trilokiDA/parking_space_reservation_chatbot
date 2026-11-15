@@ -38,6 +38,9 @@ class Reservation(Base):
     status = Column(String, default="pending")  # pending, confirmed, cancelled
     created_at = Column(DateTime, default=datetime.utcnow)
     confirmed_by_admin = Column(Boolean, default=False)
+    admin_decision = Column(String, nullable=True)  # approved, rejected
+    admin_notes = Column(String, nullable=True)
+    decided_at = Column(DateTime, nullable=True)
 
     def __repr__(self):
         return f"<Reservation(id={self.id}, name={self.first_name} {self.last_name}, status={self.status})>"
