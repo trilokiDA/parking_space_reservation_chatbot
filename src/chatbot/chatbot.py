@@ -10,6 +10,7 @@ from ..rag.generator import RAGGenerator
 from ..guardrails.sensitive_data_filter import SensitiveDataFilter
 from ..guardrails.input_validator import InputValidator
 from ..evaluation.metrics import RAGEvaluator
+from ..admin_agent.communication_service import CommunicationService
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +83,11 @@ class ParkingChatbot:
         self.sensitive_filter = SensitiveDataFilter()
         self.input_validator = InputValidator()
         self.evaluator = RAGEvaluator()
+
+        # Initialize communication service for admin interaction
+        self.communication_service = CommunicationService(
+            api_url=settings.admin_api_url
+        )
 
         logger.info("Chatbot initialized successfully")
 
@@ -274,15 +280,29 @@ class ParkingChatbot:
             reservation_id = self.db_manager.create_reservation(reservation_data_db)
 
             if reservation_id:
+                # Send reservation to admin for approval
+                admin_result = self.communication_service.send_reservation_to_admin(
+                    reservation_id=reservation_id,
+                    reservation_data=reservation_data
+                )
+
                 self._reset_reservation_flow()
-                return (f"✓ Reservation created successfully!\n\n"
-                        f"Reservation ID: {reservation_id}\n"
-                        f"Name: {reservation_data['first_name']} {reservation_data['last_name']}\n"
-                        f"Car: {reservation_data['car_number']}\n"
-                        f"Start: {reservation_data['start_time']}\n"
-                        f"End: {reservation_data['end_time']}\n\n"
-                        f"Status: Pending admin confirmation\n"
-                        f"You will be notified once an administrator confirms your reservation.")
+
+                if admin_result.get("success"):
+                    return (f"✓ Reservation created successfully!\n\n"
+                            f"Reservation ID: {reservation_id}\n"
+                            f"Name: {reservation_data['first_name']} {reservation_data['last_name']}\n"
+                            f"Car: {reservation_data['car_number']}\n"
+                            f"Start: {reservation_data['start_time']}\n"
+                            f"End: {reservation_data['end_time']}\n\n"
+                            f"Status: Sent to administrator for approval\n"
+                            f"You will be notified once an administrator reviews your reservation.\n\n"
+                            f"To check your reservation status, ask: 'Check status of reservation {reservation_id}'")
+                else:
+                    return (f"✓ Reservation created successfully!\n\n"
+                            f"Reservation ID: {reservation_id}\n\n"
+                            f"Note: The admin notification service is currently unavailable.\n"
+                            f"Your reservation has been saved and will be processed when the service is restored.")
             else:
                 self._reset_reservation_flow()
                 return "I apologize, but there was an error creating your reservation. Please try again later."

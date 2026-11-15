@@ -39,3 +39,8 @@ presidio-anonymizer==2.2.33
 pydantic>=2.9.0
 pydantic-settings>=2.5.0
 tqdm>=4.66.1
+
+# Stage 2: Admin Agent & API
+flask>=3.0.0
+flask-cors>=4.0.0
+requests>=2.31.0

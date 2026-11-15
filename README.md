@@ -1,18 +1,25 @@
-# Intelligent Parking Reservation Chatbot - Stage 1
+# Intelligent Parking Reservation Chatbot - Stages 1 & 2
 
 [![CI/CD Pipeline](https://github.com/yourusername/intelligent-chatbot/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/intelligent-chatbot/actions)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An intelligent chatbot system for parking space reservation using Retrieval-Augmented Generation (RAG) architecture with LangChain and LangGraph. This Stage 1 implementation includes core RAG functionality, guard rails for data protection, and comprehensive evaluation metrics.
+An intelligent chatbot system for parking space reservation using Retrieval-Augmented Generation (RAG) architecture with LangChain and LangGraph. This implementation includes core RAG functionality (Stage 1), Human-in-the-Loop admin approval system (Stage 2), guard rails for data protection, and comprehensive evaluation metrics.
 
 ## 🎯 Features
 
-### Core Functionality
+### Stage 1: Core RAG Functionality
 - **RAG-based Information Retrieval**: Combines vector database (FAISS) for static data and SQL database for dynamic data
 - **Interactive Reservation System**: Step-by-step collection of user information (name, car number, reservation period)
 - **Guard Rails Mechanism**: Presidio-based sensitive data detection and anonymization
 - **Performance Evaluation**: Comprehensive metrics including latency, Recall@K, Precision@K, and MRR
+
+### Stage 2: Human-in-the-Loop Agent ✨ NEW!
+- **Admin Agent**: LangChain-powered AI agent for administrator interactions
+- **REST API**: Flask-based communication service for chatbot-admin integration
+- **Admin Interface**: Interactive CLI for managing reservation approvals
+- **Status Tracking**: Real-time reservation status monitoring
+- **Decision Workflow**: Approve/reject reservations with admin notes
 
 ### Technical Highlights
 - **Flexible LLM Support**: 
@@ -109,11 +116,25 @@ This will:
 
 ## 📖 Usage
 
-### Run the Chatbot
+### Quick Start (Stage 1 Only)
 
 ```bash
 python main.py
 ```
+
+### Full System with Admin Approval (Stage 2)
+
+**Terminal 1 - Admin Interface:**
+```bash
+python admin_interface.py
+```
+
+**Terminal 2 - User Chatbot:**
+```bash
+python main.py
+```
+
+For detailed Stage 2 usage, see [STAGE2_README.md](STAGE2_README.md)
 
 ### Example Interactions
 
@@ -145,7 +166,8 @@ Bot: And when would you like to end your parking?
 You: 2024-12-25 18:00
 Bot: ✓ Reservation created successfully!
      Reservation ID: 1
-     Status: Pending admin confirmation
+     Status: Sent to administrator for approval
+     To check your reservation status, ask: 'Check status of reservation 1'
 ```
 
 ### Available Commands
@@ -199,6 +221,11 @@ intelligent_chatbot/
 │       ├── reservation_process.txt
 │       └── faq.txt
 ├── src/
+│   ├── admin_agent/           # Stage 2: Admin agent system
+│   │   ├── __init__.py
+│   │   ├── admin_agent.py     # LangChain agent
+│   │   ├── admin_api.py       # Flask REST API
+│   │   └── communication_service.py  # Communication layer
 │   ├── chatbot/               # Main chatbot logic
 │   │   ├── __init__.py
 │   │   └── chatbot.py
@@ -223,16 +250,20 @@ intelligent_chatbot/
 │       └── generator.py
 ├── tests/
 │   └── unit/                  # Unit tests
+│       ├── test_admin_agent.py         # Stage 2 tests
+│       ├── test_communication_service.py  # Stage 2 tests
 │       ├── test_database.py
 │       ├── test_evaluation.py
 │       └── test_guardrails.py
 ├── .env.example               # Environment variables template
 ├── .gitignore
+├── admin_interface.py         # Stage 2: Admin CLI
 ├── init_vectorstore.py        # Vector store initialization script
 ├── main.py                    # Main entry point
 ├── pytest.ini                 # Pytest configuration
 ├── requirements.txt           # Python dependencies
-└── README.md
+├── README.md
+└── STAGE2_README.md          # Stage 2 detailed documentation
 ```
 
 ## 🏗️ Architecture
@@ -380,14 +411,22 @@ pip install --upgrade setuptools wheel
 # Then retry: pip install -r requirements.txt
 ```
 
-## 📈 Future Enhancements (Stages 2-4)
+## 📈 Project Status
 
+### Completed ✅
+- [x] **Stage 1**: RAG-based chatbot with guard rails and evaluation
+- [x] **Stage 2**: Human-in-the-loop admin approval workflow
+  - [x] LangChain admin agent
+  - [x] REST API communication
+  - [x] Admin CLI interface
+  - [x] Comprehensive testing
+
+### Future Enhancements (Stages 3-4)
 - [ ] LangGraph-based conversation flow management
-- [ ] Human-in-the-loop admin approval workflow
 - [ ] Multi-turn conversation with context retention
 - [ ] Advanced reservation conflict detection
 - [ ] Email/SMS notifications
-- [ ] Web-based interface
+- [ ] Web-based admin dashboard
 - [ ] Multi-language support
 
 ## 🤝 Contributing
@@ -418,4 +457,8 @@ Project Link: [https://github.com/trilokiDA/parking_space_reservation_chatbot](h
 
 ---
 
-**Stage 1 Complete** ✅ - Basic RAG system with guard rails and evaluation metrics implemented.
+**Stages 1 & 2 Complete** ✅
+- ✅ RAG system with guard rails and evaluation (Stage 1)
+- ✅ Human-in-the-Loop admin approval workflow (Stage 2)
+
+📖 See [STAGE2_README.md](STAGE2_README.md) for detailed Stage 2 documentation

@@ -35,6 +35,10 @@ class Settings(BaseSettings):
     chunk_overlap: int = Field(default=50, env="CHUNK_OVERLAP")
     retrieval_k: int = Field(default=3, env="RETRIEVAL_K")
 
+    # Admin API Configuration
+    admin_api_url: str = Field(default="http://127.0.0.1:5000", env="ADMIN_API_URL")
+    admin_api_port: int = Field(default=5000, env="ADMIN_API_PORT")
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
