@@ -104,6 +104,11 @@ class ParkingChatbot:
             # Sanitize input
             sanitized_message = self.input_validator.sanitize_input(user_message)
 
+            # Check if user wants to cancel reservation flow
+            if self._is_cancel_request(sanitized_message) and self._is_in_reservation_flow():
+                self._reset_reservation_flow()
+                return "Reservation cancelled. How can I help you today?"
+
             # Check if user is in reservation flow
             if self._is_in_reservation_flow():
                 return self._handle_reservation_flow(sanitized_message)
@@ -162,6 +167,23 @@ class ParkingChatbot:
         message_lower = message.lower()
         return any(keyword in message_lower for keyword in reservation_keywords)
 
+    def _is_cancel_request(self, message: str) -> bool:
+        """Check if message is a cancel/exit request.
+
+        Args:
+            message: User message
+
+        Returns:
+            True if cancel request, False otherwise
+        """
+        cancel_keywords = [
+            "cancel", "stop", "exit", "quit", "nevermind", "never mind",
+            "go back", "start over"
+        ]
+
+        message_lower = message.lower()
+        return any(keyword in message_lower for keyword in cancel_keywords)
+
     def _start_reservation_flow(self) -> str:
         """Start reservation collection flow.
 
@@ -173,6 +195,7 @@ class ParkingChatbot:
 
         return ("I'd be happy to help you make a reservation! "
                 "Let's collect some information.\n\n"
+                "(Type 'cancel' anytime to exit the reservation process)\n\n"
                 "First, what is your first name?")
 
     def _is_in_reservation_flow(self) -> bool:
