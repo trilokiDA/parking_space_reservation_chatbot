@@ -3,3 +3,7 @@
 # ======================================================================
 John Doe | ABC123 | 2026-11-17 17:33 to 2026-11-17 21:33 | 2026-11-16 17:33:08 | Notes: Approved for regular customer
 John Doe | ABC123 | 2026-11-17 17:33 to 2026-11-17 21:33 | 2026-11-16 17:33:08 | Notes: Approved for regular customer
+John Doe | ABC123 | 2026-11-17 20:49 to 2026-11-18 00:49 | 2026-11-16 20:49:10 | Notes: Approved for regular customer
+John Doe | ABC123 | 2026-11-17 20:49 to 2026-11-18 00:49 | 2026-11-16 20:49:10 | Notes: Approved for regular customer
+John Doe | ABC123 | 2026-11-17 20:56 to 2026-11-18 00:56 | 2026-11-16 20:56:24 | Notes: Approved for regular customer
+John Doe | ABC123 | 2026-11-17 20:56 to 2026-11-18 00:56 | 2026-11-16 20:56:24 | Notes: Approved for regular customer

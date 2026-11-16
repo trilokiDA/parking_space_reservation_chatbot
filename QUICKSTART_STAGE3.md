@@ -16,6 +16,10 @@ pip install -r requirements.txt
 ### 2. Set Environment Variable (Optional)
 
 Add to `.env` file:
+
+You can generate a secure key using Python:
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+
 ```env
 MCP_SERVER_API_KEY=your_secure_api_key_here
 ```

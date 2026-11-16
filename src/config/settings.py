@@ -39,6 +39,11 @@ class Settings(BaseSettings):
     admin_api_url: str = Field(default="http://127.0.0.1:5000", env="ADMIN_API_URL")
     admin_api_port: int = Field(default=5000, env="ADMIN_API_PORT")
 
+    # MCP Server Configuration (Stage 3)
+    mcp_server_api_key: Optional[str] = Field(default=None, env="MCP_SERVER_API_KEY")
+    mcp_server_url: str = Field(default="http://127.0.0.1:8001", env="MCP_SERVER_URL")
+    mcp_server_port: int = Field(default=8001, env="MCP_SERVER_PORT")
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"
