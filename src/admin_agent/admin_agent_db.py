@@ -5,6 +5,7 @@ from typing import Dict, Any, Optional
 from datetime import datetime
 from langchain_openai import ChatOpenAI
 from ..database.db_manager import DatabaseManager
+from ..mcp_server.mcp_client import get_mcp_client
 
 logger = logging.getLogger(__name__)
 
@@ -12,15 +13,28 @@ logger = logging.getLogger(__name__)
 class AdminAgentDB:
     """Admin agent that uses database instead of in-memory storage."""
 
-    def __init__(self, settings):
+    def __init__(self, settings, use_mcp_server: bool = True):
         """Initialize the admin agent with database support.
 
         Args:
             settings: Application settings
+            use_mcp_server: Whether to use MCP server for file writing (Stage 3)
         """
         self.settings = settings
         self.llm = self._initialize_llm()
         self.db_manager = DatabaseManager(settings.database_url)
+        self.use_mcp_server = use_mcp_server
+
+        # Initialize MCP client if enabled
+        if self.use_mcp_server:
+            try:
+                self.mcp_client = get_mcp_client()
+                logger.info("MCP client initialized for Stage 3 integration")
+            except Exception as e:
+                logger.warning(f"Failed to initialize MCP client: {e}")
+                self.mcp_client = None
+        else:
+            self.mcp_client = None
 
     def _initialize_llm(self):
         """Initialize the language model."""
@@ -203,15 +217,38 @@ Status: {reservation.get('status', 'unknown')}
                 session.execute(stmt)
                 session.commit()
 
-                decided_at = datetime.now().isoformat()
+                decided_at = datetime.now()
                 logger.info(f"Reservation {reservation_id} {decision} by admin and saved to database")
+
+                # Stage 3: Write approved reservations to file via MCP server
+                if decision == "approved" and self.use_mcp_server and self.mcp_client:
+                    try:
+                        mcp_result = self.mcp_client.write_reservation(
+                            reservation_id=reservation_id,
+                            first_name=reservation['first_name'],
+                            last_name=reservation['last_name'],
+                            car_number=reservation['car_number'],
+                            start_time=reservation['start_time'],
+                            end_time=reservation['end_time'],
+                            approval_time=decided_at,
+                            admin_notes=admin_notes
+                        )
+
+                        if mcp_result.get("success"):
+                            logger.info(f"Reservation {reservation_id} written to file via MCP server")
+                        else:
+                            logger.warning(f"Failed to write to MCP server: {mcp_result.get('error')}")
+                    except Exception as e:
+                        logger.error(f"Error writing to MCP server: {e}")
+                        # Continue even if MCP write fails - database update succeeded
 
                 return {
                     "success": True,
                     "reservation_id": reservation_id,
                     "decision": decision,
                     "admin_notes": admin_notes,
-                    "decided_at": decided_at
+                    "decided_at": decided_at.isoformat(),
+                    "mcp_written": decision == "approved" and self.mcp_client is not None
                 }
             except Exception as e:
                 session.rollback()

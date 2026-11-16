@@ -1,10 +1,10 @@
-# Intelligent Parking Reservation Chatbot - Stages 1 & 2
+# Intelligent Parking Reservation Chatbot - Stages 1, 2 & 3
 
 [![CI/CD Pipeline](https://github.com/yourusername/intelligent-chatbot/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/intelligent-chatbot/actions)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An intelligent chatbot system for parking space reservation using Retrieval-Augmented Generation (RAG) architecture with LangChain and LangGraph. This implementation includes core RAG functionality (Stage 1), Human-in-the-Loop admin approval system (Stage 2), guard rails for data protection, and comprehensive evaluation metrics.
+An intelligent chatbot system for parking space reservation using Retrieval-Augmented Generation (RAG) architecture with LangChain and LangGraph. This implementation includes core RAG functionality (Stage 1), Human-in-the-Loop admin approval system (Stage 2), MCP server for confirmed reservations (Stage 3), guard rails for data protection, and comprehensive evaluation metrics.
 
 ## 🎯 Features
 
@@ -14,12 +14,19 @@ An intelligent chatbot system for parking space reservation using Retrieval-Augm
 - **Guard Rails Mechanism**: Presidio-based sensitive data detection and anonymization
 - **Performance Evaluation**: Comprehensive metrics including latency, Recall@K, Precision@K, and MRR
 
-### Stage 2: Human-in-the-Loop Agent ✨ NEW!
+### Stage 2: Human-in-the-Loop Agent
 - **Admin Agent**: LangChain-powered AI agent for administrator interactions
 - **REST API**: Flask-based communication service for chatbot-admin integration
 - **Admin Interface**: Interactive CLI for managing reservation approvals
 - **Status Tracking**: Real-time reservation status monitoring
 - **Decision Workflow**: Approve/reject reservations with admin notes
+
+### Stage 3: MCP Server Integration ✨ NEW!
+- **FastAPI MCP Server**: Secure RESTful API for processing confirmed reservations
+- **File-Based Storage**: Writes approved reservations to text file in standardized format
+- **API Authentication**: Secure API key-based authentication
+- **Thread-Safe Operations**: Concurrent write handling with file locking
+- **Comprehensive Testing**: Unit and integration tests with pytest
 
 ### Technical Highlights
 - **Flexible LLM Support**: 
@@ -122,19 +129,26 @@ This will:
 python main.py
 ```
 
-### Full System with Admin Approval (Stage 2)
+### Full System with Admin Approval (Stages 2 & 3)
 
-**Terminal 1 - Admin Interface:**
+**Terminal 1 - MCP Server (Stage 3):**
 ```bash
-python admin_interface.py
+python run_mcp_server.py
 ```
 
-**Terminal 2 - User Chatbot:**
+**Terminal 2 - Admin Interface:**
+```bash
+python admin_interface_db.py
+```
+
+**Terminal 3 - User Chatbot:**
 ```bash
 python main.py
 ```
 
-For detailed Stage 2 usage, see [STAGE2_README.md](STAGE2_README.md)
+For detailed usage:
+- Stage 2: See [STAGE2_README.md](STAGE2_README.md)
+- Stage 3: See [STAGE3_README.md](STAGE3_README.md)
 
 ### Example Interactions
 
@@ -420,14 +434,21 @@ pip install --upgrade setuptools wheel
   - [x] REST API communication
   - [x] Admin CLI interface
   - [x] Comprehensive testing
+- [x] **Stage 3**: MCP server for confirmed reservations
+  - [x] FastAPI-based MCP server
+  - [x] Secure file writing with API authentication
+  - [x] Integration with admin approval workflow
+  - [x] Unit and integration tests
 
-### Future Enhancements (Stages 3-4)
+### Future Enhancements (Stage 4+)
 - [ ] LangGraph-based conversation flow management
 - [ ] Multi-turn conversation with context retention
 - [ ] Advanced reservation conflict detection
 - [ ] Email/SMS notifications
 - [ ] Web-based admin dashboard
 - [ ] Multi-language support
+- [ ] Cloud storage integration (S3, Azure Blob)
+- [ ] Real-time notifications via webhooks
 
 ## 🤝 Contributing
 
@@ -457,8 +478,11 @@ Project Link: [https://github.com/trilokiDA/parking_space_reservation_chatbot](h
 
 ---
 
-**Stages 1 & 2 Complete** ✅
+**Stages 1, 2 & 3 Complete** ✅
 - ✅ RAG system with guard rails and evaluation (Stage 1)
 - ✅ Human-in-the-Loop admin approval workflow (Stage 2)
+- ✅ MCP server for confirmed reservation processing (Stage 3)
 
-📖 See [STAGE2_README.md](STAGE2_README.md) for detailed Stage 2 documentation
+📖 Documentation:
+- [STAGE2_README.md](STAGE2_README.md) - Stage 2 detailed documentation
+- [STAGE3_README.md](STAGE3_README.md) - Stage 3 detailed documentation

@@ -1,0 +1,5 @@
+# Confirmed Parking Reservations
+# Format: Name | Car Number | Reservation Period | Approval Time
+# ======================================================================
+John Doe | ABC123 | 2026-11-17 17:33 to 2026-11-17 21:33 | 2026-11-16 17:33:08 | Notes: Approved for regular customer
+John Doe | ABC123 | 2026-11-17 17:33 to 2026-11-17 21:33 | 2026-11-16 17:33:08 | Notes: Approved for regular customer
