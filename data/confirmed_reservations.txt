@@ -7,3 +7,6 @@ John Doe | ABC123 | 2026-11-17 20:49 to 2026-11-18 00:49 | 2026-11-16 20:49:10 |
 John Doe | ABC123 | 2026-11-17 20:49 to 2026-11-18 00:49 | 2026-11-16 20:49:10 | Notes: Approved for regular customer
 John Doe | ABC123 | 2026-11-17 20:56 to 2026-11-18 00:56 | 2026-11-16 20:56:24 | Notes: Approved for regular customer
 John Doe | ABC123 | 2026-11-17 20:56 to 2026-11-18 00:56 | 2026-11-16 20:56:24 | Notes: Approved for regular customer
+Test Debug | TEST999 | 2026-11-18 11:12 to 2026-11-18 13:12 | 2026-11-17 11:12:00 | Notes: Debug test from test script
+Triloki Gupta | ABCDEF1234 | 2026-11-25 14:30 to 2026-11-27 14:30 | 2026-11-17 11:21:19 | Notes: Test approval from script
+Triloki Gupta | ABCDEF1234 | 2026-11-25 14:30 to 2026-11-27 14:30 | 2026-11-17 11:32:52 | Notes: regualr customer

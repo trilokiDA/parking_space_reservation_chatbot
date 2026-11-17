@@ -137,7 +137,7 @@ def main():
         # Initialize settings and admin agent
         logger.info("Initializing database-backed admin agent...")
         settings = get_settings()
-        admin_agent = AdminAgentDB(settings)  # Using DB version
+        admin_agent = AdminAgentDB(settings, use_mcp_server=True)  # Using DB version with MCP integration
 
         # Start the API server
         logger.info("Starting admin API server...")

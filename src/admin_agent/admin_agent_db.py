@@ -221,26 +221,45 @@ Status: {reservation.get('status', 'unknown')}
                 logger.info(f"Reservation {reservation_id} {decision} by admin and saved to database")
 
                 # Stage 3: Write approved reservations to file via MCP server
+                logger.info(f"[MCP] Check: decision={decision}, use_mcp_server={self.use_mcp_server}, mcp_client={'exists' if self.mcp_client else 'None'}")
+
                 if decision == "approved" and self.use_mcp_server and self.mcp_client:
+                    logger.info(f"[MCP] Starting write for reservation {reservation_id}")
                     try:
+                        # Convert string dates to datetime objects if needed
+                        from dateutil import parser as date_parser
+                        start_time = reservation['start_time']
+                        end_time = reservation['end_time']
+
+                        if isinstance(start_time, str):
+                            start_time = date_parser.parse(start_time)
+                        if isinstance(end_time, str):
+                            end_time = date_parser.parse(end_time)
+
                         mcp_result = self.mcp_client.write_reservation(
                             reservation_id=reservation_id,
                             first_name=reservation['first_name'],
                             last_name=reservation['last_name'],
                             car_number=reservation['car_number'],
-                            start_time=reservation['start_time'],
-                            end_time=reservation['end_time'],
+                            start_time=start_time,
+                            end_time=end_time,
                             approval_time=decided_at,
                             admin_notes=admin_notes
                         )
 
+                        logger.info(f"[MCP] Result: {mcp_result}")
+
                         if mcp_result.get("success"):
-                            logger.info(f"Reservation {reservation_id} written to file via MCP server")
+                            logger.info(f"[MCP] ✓ Reservation {reservation_id} written to file via MCP server")
                         else:
-                            logger.warning(f"Failed to write to MCP server: {mcp_result.get('error')}")
+                            logger.warning(f"[MCP] ✗ Failed to write to MCP server: {mcp_result.get('error')}")
                     except Exception as e:
-                        logger.error(f"Error writing to MCP server: {e}")
+                        logger.error(f"[MCP] ✗ Exception writing to MCP server: {e}")
+                        import traceback
+                        logger.error(traceback.format_exc())
                         # Continue even if MCP write fails - database update succeeded
+                else:
+                    logger.warning(f"[MCP] Write skipped! decision={decision}, use_mcp={self.use_mcp_server}, has_client={self.mcp_client is not None}")
 
                 return {
                     "success": True,
