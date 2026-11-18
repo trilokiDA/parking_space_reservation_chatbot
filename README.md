@@ -1,10 +1,11 @@
-# Intelligent Parking Reservation Chatbot - Stages 1, 2 & 3
+# Intelligent Parking Reservation Chatbot - Complete System (Stages 1-4)
 
 [![CI/CD Pipeline](https://github.com/yourusername/intelligent-chatbot/actions/workflows/ci.yml/badge.svg)](https://github.com/yourusername/intelligent-chatbot/actions)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-Latest-green.svg)](https://langchain-ai.github.io/langgraph/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An intelligent chatbot system for parking space reservation using Retrieval-Augmented Generation (RAG) architecture with LangChain and LangGraph. This implementation includes core RAG functionality (Stage 1), Human-in-the-Loop admin approval system (Stage 2), MCP server for confirmed reservations (Stage 3), guard rails for data protection, and comprehensive evaluation metrics.
+An intelligent chatbot system for parking space reservation using Retrieval-Augmented Generation (RAG) architecture with LangChain and **LangGraph orchestration**. This complete implementation includes core RAG functionality (Stage 1), Human-in-the-Loop admin approval system (Stage 2), MCP server for confirmed reservations (Stage 3), and **LangGraph-based workflow orchestration (Stage 4)**, along with guard rails for data protection and comprehensive evaluation metrics.
 
 ## 🎯 Features
 
@@ -21,12 +22,20 @@ An intelligent chatbot system for parking space reservation using Retrieval-Augm
 - **Status Tracking**: Real-time reservation status monitoring
 - **Decision Workflow**: Approve/reject reservations with admin notes
 
-### Stage 3: MCP Server Integration ✨ NEW!
+### Stage 3: MCP Server Integration
 - **FastAPI MCP Server**: Secure RESTful API for processing confirmed reservations
 - **File-Based Storage**: Writes approved reservations to text file in standardized format
 - **API Authentication**: Secure API key-based authentication
 - **Thread-Safe Operations**: Concurrent write handling with file locking
 - **Comprehensive Testing**: Unit and integration tests with pytest
+
+### Stage 4: LangGraph Orchestration ✨ NEW!
+- **State Machine Workflow**: LangGraph-based orchestration of all components
+- **Seamless Integration**: Unified workflow connecting Stages 1-3
+- **State Persistence**: Automatic state management and checkpointing
+- **Conditional Routing**: Intelligent workflow branching based on context
+- **Error Recovery**: Robust error handling with automatic retries
+- **39 Comprehensive Tests**: Unit and integration tests covering all workflows
 
 ### Technical Highlights
 - **Flexible LLM Support**: 
@@ -146,9 +155,19 @@ python admin_interface_db.py
 python main.py
 ```
 
+### Complete Orchestrated System (Stage 4) - **RECOMMENDED** 🌟
+
+**Single Command - LangGraph Orchestration:**
+```bash
+python orchestrated_main.py
+```
+
+This runs the complete system with LangGraph workflow orchestration, seamlessly integrating all components!
+
 For detailed usage:
 - Stage 2: See [STAGE2_README.md](STAGE2_README.md)
 - Stage 3: See [STAGE3_README.md](STAGE3_README.md)
+- **Stage 4**: See [STAGE4_README.md](STAGE4_README.md) ⭐
 
 ### Example Interactions
 
@@ -439,16 +458,22 @@ pip install --upgrade setuptools wheel
   - [x] Secure file writing with API authentication
   - [x] Integration with admin approval workflow
   - [x] Unit and integration tests
+- [x] **Stage 4**: LangGraph orchestration ⭐ **NEW!**
+  - [x] State machine-based workflow
+  - [x] Seamless integration of all stages
+  - [x] Conditional routing and error handling
+  - [x] State persistence with checkpointing
+  - [x] 39 comprehensive tests (unit + integration)
+  - [x] Complete documentation
 
-### Future Enhancements (Stage 4+)
-- [ ] LangGraph-based conversation flow management
-- [ ] Multi-turn conversation with context retention
-- [ ] Advanced reservation conflict detection
+### Future Enhancements (Stage 5+)
 - [ ] Email/SMS notifications
 - [ ] Web-based admin dashboard
 - [ ] Multi-language support
 - [ ] Cloud storage integration (S3, Azure Blob)
 - [ ] Real-time notifications via webhooks
+- [ ] Advanced analytics and reporting
+- [ ] Mobile app integration
 
 ## 🤝 Contributing
 
@@ -478,11 +503,14 @@ Project Link: [https://github.com/trilokiDA/parking_space_reservation_chatbot](h
 
 ---
 
-**Stages 1, 2 & 3 Complete** ✅
+**All Stages Complete!** ✅✅✅✅
 - ✅ RAG system with guard rails and evaluation (Stage 1)
 - ✅ Human-in-the-Loop admin approval workflow (Stage 2)
 - ✅ MCP server for confirmed reservation processing (Stage 3)
+- ✅ **LangGraph orchestration - Complete system integration (Stage 4)** 🌟
 
 📖 Documentation:
+- [README.md](README.md) - Main documentation and overview
 - [STAGE2_README.md](STAGE2_README.md) - Stage 2 detailed documentation
 - [STAGE3_README.md](STAGE3_README.md) - Stage 3 detailed documentation
+- [**STAGE4_README.md**](STAGE4_README.md) - **Stage 4 LangGraph orchestration** ⭐
