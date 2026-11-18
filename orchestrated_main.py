@@ -17,15 +17,26 @@ from src.orchestration.workflow_graph import ReservationOrchestrator
 # Load environment variables
 load_dotenv()
 
-# Setup logging
+# Setup logging - INFO to file, WARNING to console
+file_handler = logging.FileHandler('orchestrated_chatbot.log')
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.WARNING)  # Only show warnings and errors in console
+console_handler.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
+
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('orchestrated_chatbot.log'),
-        logging.StreamHandler()
-    ]
+    handlers=[file_handler, console_handler]
 )
+
+# Suppress INFO logs from external libraries
+logging.getLogger('httpx').setLevel(logging.WARNING)
+logging.getLogger('httpcore').setLevel(logging.WARNING)
+logging.getLogger('openai').setLevel(logging.WARNING)
+logging.getLogger('urllib3').setLevel(logging.WARNING)
+
 logger = logging.getLogger(__name__)
 
 
